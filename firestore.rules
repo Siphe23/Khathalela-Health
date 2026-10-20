@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Each person has ONE profile document, users/{their uid}
+    match /users/{uid} {
+
+      // You can only read your own profile.
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // You can only create your own profile, with a valid role.
+      // A worker can only start as "pending": nobody can self-verify.
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.role in ['patient', 'worker']
+        && (request.resource.data.role == 'patient'
+            || request.resource.data.verificationStatus == 'pending');
+
+      // You may edit your profile, but never your role or verification status.
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.get('verificationStatus', null)
+           == resource.data.get('verificationStatus', null);
+
+      allow delete: if false;
+    }
+  }
+}
