@@ -95,7 +95,8 @@ function Register() {
 
     const details = {};
     role.fields.forEach((field) => {
-      details[field.name] = (form[field.name] || '').trim();
+      const value = (form[field.name] || '').trim();
+      details[field.name] = field.valueType === 'number' ? Number(value) : value;
     });
 
     // On success, PublicOnlyRoute notices isAuthenticated is true and moves
@@ -149,6 +150,7 @@ function Register() {
                 options={field.options}
                 hint={field.hint}
                 optional={!field.required}
+                inputMode={field.inputMode}
                 value={form[field.name] || ''}
                 onChange={handleChange}
                 error={errors[field.name]}

@@ -17,6 +17,16 @@ export const ROLES = {
     // then set  image: patientImg  below. Leave null to use the drawn picture.
     image: null,
     fields: [
+      {
+        name: 'gender', label: 'Gender', type: 'select', required: true,
+        options: ['Female', 'Male', 'Other', 'Prefer not to say'],
+      },
+      {
+        name: 'age', label: 'Age', type: 'text', inputMode: 'numeric', valueType: 'number', required: true,
+        hint: 'Your age in years.',
+        pattern: /^(0|[1-9][0-9]?|1[01][0-9]|120)$/,
+        patternMessage: 'Enter your age as a whole number from 0 to 120.',
+      },
       { name: 'preferredLanguage', label: 'Preferred language', type: 'select', options: LANGUAGES, required: true },
       { name: 'preferredClinic', label: 'Preferred clinic', type: 'text', required: false, hint: 'For example: Mthatha Clinic' },
     ],

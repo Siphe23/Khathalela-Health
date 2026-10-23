@@ -2,28 +2,76 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Each person has ONE profile document, users/{their uid}
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isVerifiedWorker() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'worker'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('verificationStatus', '') == 'verified';
+    }
+
     match /users/{uid} {
-
-      // You can only read your own profile.
-      allow read: if request.auth != null && request.auth.uid == uid;
-
-      // You can only create your own profile, with a valid role.
-      // A worker can only start as "pending": nobody can self-verify.
-      allow create: if request.auth != null
-        && request.auth.uid == uid
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid)
         && request.resource.data.role in ['patient', 'worker']
         && (request.resource.data.role == 'patient'
-            || request.resource.data.verificationStatus == 'pending');
-
-      // You may edit your profile, but never your role or verification status.
-      allow update: if request.auth != null
-        && request.auth.uid == uid
+          || request.resource.data.verificationStatus == 'pending');
+      allow update: if isOwner(uid)
         && request.resource.data.role == resource.data.role
-        && request.resource.data.get('verificationStatus', null)
-           == resource.data.get('verificationStatus', null);
-
+        && request.resource.data.get('verificationStatus', null) == resource.data.get('verificationStatus', null);
       allow delete: if false;
+    }
+
+    match /patients/{patientId} {
+      allow read: if isVerifiedWorker() || isOwner(patientId);
+      allow create: if isVerifiedWorker()
+        || (isOwner(patientId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.get('demo', false) == false);
+      allow update: if isVerifiedWorker();
+      allow delete: if isVerifiedWorker() && resource.data.get('demo', false) == true;
+    }
+
+    match /appointments/{appointmentId} {
+      allow read: if isVerifiedWorker()
+        || (signedIn() && resource.data.patientId == request.auth.uid);
+      allow create: if isVerifiedWorker()
+        || (signedIn()
+          && request.resource.data.patientId == request.auth.uid
+          && request.resource.data.status == 'requested'
+          && request.resource.data.get('demo', false) == false);
+      allow update: if isVerifiedWorker()
+        || (signedIn()
+          && resource.data.patientId == request.auth.uid
+          && resource.data.status == 'upcoming'
+          && request.resource.data.status == 'checked-in'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'checkedInAt']));
+      allow delete: if isVerifiedWorker() && resource.data.get('demo', false) == true;
+    }
+
+    match /medications/{medicationId} {
+      allow read: if isVerifiedWorker()
+        || (signedIn() && resource.data.patientId == request.auth.uid);
+      allow create: if isVerifiedWorker();
+      allow update: if isVerifiedWorker()
+        || (signedIn()
+          && resource.data.patientId == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reminder']));
+      allow delete: if isVerifiedWorker();
+    }
+
+    match /notes/{noteId} {
+      allow read: if isVerifiedWorker();
+      allow create: if isVerifiedWorker() && request.resource.data.authorId == request.auth.uid;
+      allow update: if false;
+      allow delete: if isVerifiedWorker() && resource.data.get('demo', false) == true;
     }
   }
 }

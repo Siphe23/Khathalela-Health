@@ -11,6 +11,7 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebaseConfig';
 import { ROLES, isValidRole } from '../../config/roles';
+import { buildPatientRecord } from '../care/careService';
 
 // Firebase signs you in the instant the account exists, BEFORE we have saved
 // the profile. This flag tells the auth listener to wait during registration.
@@ -28,13 +29,14 @@ function toUser(firebaseUser, profile) {
   const details = {};
   if (role) {
     ROLES[role].fields.forEach((field) => {
-      details[field.name] = profile[field.name] || '';
+      details[field.name] = profile[field.name] ?? '';
     });
   }
   return {
     uid: firebaseUser.uid,
     email: firebaseUser.email,
     displayName: firebaseUser.displayName || (profile && profile.fullName) || '',
+    phone: (profile && profile.phone) || '',
     role,
     verificationStatus: (profile && profile.verificationStatus) || null,
     details,
@@ -60,6 +62,10 @@ export async function registerUser({ fullName, phone, email, password, role, det
       createdAt: serverTimestamp(),
     };
     await setDoc(doc(db, 'users', createdUser.uid), profile);
+    // Patients also get a record in the clinic's patient list
+    if (role === 'patient') {
+      await setDoc(doc(db, 'patients', createdUser.uid), buildPatientRecord(createdUser.uid, { fullName, phone, details }));
+    }
 
     return toUser(createdUser, profile);
   } catch (error) {
@@ -112,6 +118,7 @@ export function watchAuthState(callback) {
     try {
       profile = await loadProfile(firebaseUser.uid);
     } catch (error) {
+      console.error('Could not load profile, code:', error && error.code);
       profile = null; // dashboard will tell the person the profile could not load
     }
     callback(toUser(firebaseUser, profile));
