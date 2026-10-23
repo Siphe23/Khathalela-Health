@@ -396,3 +396,24 @@ button.back-link { border: none; background: none; padding: 0; font-family: inhe
 .clinic-qr { text-align: center; }
 .qr-box { display: inline-flex; margin-top: 8px; padding: 12px; background: #fff; border: 1px solid var(--grey-border); border-radius: 16px; }
 .qr-box svg { display: block; }
+
+/* ---------- Hamburger menu on phones and narrow windows ---------- */
+.menu-btn, .nav-logout { display: none; }
+.nav-logout { border: none; background: none; font: inherit; cursor: pointer; }
+
+@media (max-width: 1100px) {
+  .topbar-inner { flex-wrap: wrap; gap: 8px 12px; }
+  .brand { order: 1; }
+  .topbar-user { order: 2; margin-left: auto; }
+  .topbar-user .btn-sm { display: none; }
+  .menu-btn {
+    order: 3; display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; border: 1.5px solid var(--grey-border); border-radius: 12px;
+    background: #fff; color: var(--teal); cursor: pointer;
+  }
+  .menu-btn:hover { background: var(--mint-light); }
+  .topnav { display: none; order: 4; flex: none; width: 100%; flex-direction: column; gap: 4px; overflow: visible; padding: 8px 0 4px; border-top: 1px solid var(--grey-border); }
+  .topnav.open { display: flex; }
+  .topnav .nav-link { width: 100%; min-height: 50px; padding: 0 16px; border-radius: 14px; }
+  .nav-logout { display: inline-flex; color: #8a3b12; }
+}

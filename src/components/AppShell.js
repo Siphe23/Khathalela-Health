@@ -1,4 +1,5 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from './Icon';
 import Logo from './Logo';
@@ -31,6 +32,18 @@ const NAV = {
 function AppShell({ title, subtitle, backTo, backLabel = 'Back', actions, right, wide = false, center = false, children }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close the phone menu when you open a page, or press Escape
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+  useEffect(() => {
+    const onKey = (event) => { if (event.key === 'Escape') setMenuOpen(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
   // Back goes to the page you came from. If there is none (page opened directly), use backTo.
   const goBack = () => {
     if (window.history.state && window.history.state.idx > 0) navigate(-1);
@@ -47,13 +60,16 @@ function AppShell({ title, subtitle, backTo, backLabel = 'Back', actions, right,
             <Logo size={34} textSize="1.2rem" />
           </Link>
 
-          <nav className="topnav" aria-label="Main menu">
+          <nav id="main-menu" className={menuOpen ? 'topnav open' : 'topnav'} aria-label="Main menu">
             {items.map((item) => (
               <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
                 <Icon name={item.icon} size={18} />
                 <span>{item.label}</span>
               </NavLink>
             ))}
+            <button type="button" className="nav-link nav-logout" onClick={() => dispatch(logout())} disabled={loading}>
+              <Icon name="back" size={18} /><span>Log Out</span>
+            </button>
           </nav>
 
           <div className="topbar-user">
@@ -63,6 +79,12 @@ function AppShell({ title, subtitle, backTo, backLabel = 'Back', actions, right,
             </Link>
             <button type="button" className="btn-sm" onClick={() => dispatch(logout())} disabled={loading}>
               Log Out
+            </button>
+            <button type="button" className="menu-btn" aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen} aria-controls="main-menu" onClick={() => setMenuOpen(!menuOpen)}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                {menuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+              </svg>
             </button>
           </div>
         </div>
