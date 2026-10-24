@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Logo from '../components/Logo';
 import PatientHome from './PatientHome';
 import WorkerHome from './WorkerHome';
+import AdminHome from './AdminHome';
 import { logout } from '../features/auth/authThunks';
 import '../css-styles/AuthForm.css';
 import '../css-styles/AuthExtras.css';
@@ -11,6 +12,7 @@ function Dashboard() {
   const dispatch = useDispatch();
   const { user, loading } = useSelector((state) => state.auth);
 
+  if (user && user.role === 'admin') return <AdminHome />;
   if (user && user.role === 'worker') return <WorkerHome />;
   if (user && user.role === 'patient') return <PatientHome />;
 

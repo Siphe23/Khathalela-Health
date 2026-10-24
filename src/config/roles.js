@@ -50,6 +50,20 @@ export const ROLES = {
       },
     ],
   },
+  // Administrators can only sign up with the invitation code that the app owner saved
+  // in Firestore (settings/adminInvite). The Firestore rules check the code.
+  admin: {
+    id: 'admin',
+    label: 'Administrator',
+    description: 'Approve healthcare workers and oversee the app.',
+    image: null,
+    fields: [
+      {
+        name: 'inviteCode', label: 'Administrator invitation code', type: 'password', required: true, secret: true,
+        hint: 'Given to you by the person who set up the app.',
+      },
+    ],
+  },
 };
 
 export const isValidRole = (role) => Object.prototype.hasOwnProperty.call(ROLES, role);

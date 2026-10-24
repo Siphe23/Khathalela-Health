@@ -18,6 +18,12 @@ const NAV = {
     { to: '/help', label: 'Help', icon: 'help' },
     { to: '/profile', label: 'Profile', icon: 'user' },
   ],
+  admin: [
+    { to: '/dashboard', label: 'Dashboard', icon: 'home' },
+    { to: '/admin/users', label: 'Users', icon: 'users' },
+    { to: '/admin/activity', label: 'Activity', icon: 'clipboard' },
+    { to: '/profile', label: 'Profile', icon: 'user' },
+  ],
   worker: [
     { to: '/dashboard', label: 'Dashboard', icon: 'home' },
     { to: '/patients', label: 'Patients', icon: 'users' },

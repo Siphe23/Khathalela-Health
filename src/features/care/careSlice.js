@@ -4,11 +4,12 @@ import { createSlice } from '@reduxjs/toolkit';
 // Pages only READ them. To change data, pages call careService.js and Firestore
 // sends the new list back automatically, on every device.
 const emptyLists = () => ({
+  users: [], // only filled for administrators
   patients: [],
   appointments: [],
   medications: [],
   notes: [],
-  loaded: { patients: false, appointments: false, medications: false, notes: false },
+  loaded: { users: false, patients: false, appointments: false, medications: false, notes: false },
   error: null,
 });
 

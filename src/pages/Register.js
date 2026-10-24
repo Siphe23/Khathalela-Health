@@ -151,6 +151,7 @@ function Register() {
                 hint={field.hint}
                 optional={!field.required}
                 inputMode={field.inputMode}
+                autoComplete={field.secret ? 'off' : undefined}
                 value={form[field.name] || ''}
                 onChange={handleChange}
                 error={errors[field.name]}

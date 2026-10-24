@@ -21,6 +21,8 @@ import PatientDetails from './pages/PatientDetails';
 import Missed from './pages/Missed';
 import FollowUps from './pages/FollowUps';
 import Summary from './pages/Summary';
+import AdminUsers from './pages/AdminUsers';
+import AdminActivity from './pages/AdminActivity';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicOnlyRoute from './components/PublicOnlyRoute';
 import FirebaseSetupNotice from './components/FirebaseSetupNotice';
@@ -73,6 +75,10 @@ function App() {
         <Route path="/missed" element={<ProtectedRoute role="worker"><Missed /></ProtectedRoute>} />
         <Route path="/followups" element={<ProtectedRoute role="worker"><FollowUps /></ProtectedRoute>} />
         <Route path="/summary" element={<ProtectedRoute role="worker"><Summary /></ProtectedRoute>} />
+
+        {/* Administrators only */}
+        <Route path="/admin/users" element={<ProtectedRoute role="admin"><AdminUsers /></ProtectedRoute>} />
+        <Route path="/admin/activity" element={<ProtectedRoute role="admin"><AdminActivity /></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

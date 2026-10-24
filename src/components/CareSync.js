@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { collectionLoaded, careError, clearCare } from '../features/care/careSlice';
-import { watchPatientData, watchWorkerData, ensurePatientRecord } from '../features/care/careService';
+import { watchPatientData, watchWorkerData, watchAdminData, ensurePatientRecord } from '../features/care/careService';
 import { getCareErrorMessage } from '../features/care/careErrors';
 import { isFirebaseConfigured } from '../firebase/firebaseConfig';
 
@@ -30,6 +30,7 @@ function CareSync() {
       ensurePatientRecord(userRef.current).catch((error) => getCareErrorMessage(error));
       return watchPatientData(uid, handlers);
     }
+    if (role === 'admin') return watchAdminData(handlers);
     // Workers only get data once an administrator has verified them
     if (role === 'worker' && verified) return watchWorkerData(handlers);
     return undefined;

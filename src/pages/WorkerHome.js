@@ -15,6 +15,9 @@ import {
 import { REASONS } from '../config/reasons';
 import { formatDate } from '../utils/format';
 
+// Demo tools are hidden unless you add REACT_APP_DEMO_TOOLS=true to your .env file.
+const SHOW_DEMO_TOOLS = process.env.REACT_APP_DEMO_TOOLS === 'true';
+
 function WorkerHome() {
   const user = useSelector((state) => state.auth.user);
   const { appointments, patients, loaded } = useSelector((state) => state.care);
@@ -55,7 +58,12 @@ function WorkerHome() {
 
   return (
     <AppShell wide title={`Hello, ${firstName}`} subtitle={facility || 'Healthcare worker'}>
-      {!verified && (
+      {!verified && user.verificationStatus === 'rejected' && (
+        <div className="banner banner-error" role="alert">
+          Your account was not approved. Please contact the administrator.
+        </div>
+      )}
+      {!verified && user.verificationStatus !== 'rejected' && (
         <div className="banner banner-info" role="status">
           Your professional registration number is waiting to be checked. Patient information
           appears here once an administrator verifies your account.
@@ -163,7 +171,7 @@ function WorkerHome() {
 
       <ClinicQR />
 
-      {verified && (
+      {verified && SHOW_DEMO_TOOLS && (
         <section className="card demo-tools" aria-labelledby="demo-tools">
           <h2 id="demo-tools" className="card-title">Demo tools</h2>
           <p className="muted small">

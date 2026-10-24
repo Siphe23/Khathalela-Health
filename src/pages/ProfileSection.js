@@ -14,14 +14,14 @@ function ProfileSection() {
 
   if (section === 'personal') {
     title = 'Personal Information';
-    rows = [['Full name', user.displayName || 'Not set'], ['Account type', role ? role.label : 'Unknown']];
+    rows = [['Full name', user.displayName || 'Not set'], ['Account type', role ? role.label : user.role === 'admin' ? 'Administrator' : 'Unknown']];
     if (role) {
       role.fields.forEach((field) => {
         if (user.details && user.details[field.name] !== undefined && user.details[field.name] !== '') rows.push([field.label, user.details[field.name]]);
       });
     }
     if (user.role === 'worker') {
-      rows.push(['Verification', user.verificationStatus === 'verified' ? 'Verified' : 'Pending check']);
+      rows.push(['Verification', user.verificationStatus === 'verified' ? 'Verified' : user.verificationStatus === 'rejected' ? 'Not approved' : 'Pending check']);
     }
   } else if (section === 'contact') {
     title = 'Contact Details';

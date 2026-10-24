@@ -17,20 +17,34 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('verificationStatus', '') == 'verified';
     }
 
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     match /users/{uid} {
-      allow read: if isOwner(uid);
+      allow read: if isOwner(uid) || isAdmin();
       allow create: if isOwner(uid)
-        && request.resource.data.role in ['patient', 'worker']
         && (request.resource.data.role == 'patient'
-          || request.resource.data.verificationStatus == 'pending');
-      allow update: if isOwner(uid)
-        && request.resource.data.role == resource.data.role
-        && request.resource.data.get('verificationStatus', null) == resource.data.get('verificationStatus', null);
+          || (request.resource.data.role == 'worker'
+            && request.resource.data.verificationStatus == 'pending')
+          || (request.resource.data.role == 'admin'
+            && request.resource.data.get('inviteCode', '') != ''
+            && exists(/databases/$(database)/documents/settings/adminInvite)
+            && request.resource.data.get('inviteCode', '') == get(/databases/$(database)/documents/settings/adminInvite).data.get('code', '')));
+      allow update: if (isOwner(uid)
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.get('verificationStatus', null) == resource.data.get('verificationStatus', null))
+        || (isAdmin()
+          && resource.data.role == 'worker'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['verificationStatus'])
+          && request.resource.data.verificationStatus in ['verified', 'pending', 'rejected']);
       allow delete: if false;
     }
 
     match /patients/{patientId} {
-      allow read: if isVerifiedWorker() || isOwner(patientId);
+      allow read: if isVerifiedWorker() || isAdmin() || isOwner(patientId);
       allow create: if isVerifiedWorker()
         || (isOwner(patientId)
           && request.resource.data.uid == request.auth.uid
@@ -40,7 +54,7 @@ service cloud.firestore {
     }
 
     match /appointments/{appointmentId} {
-      allow read: if isVerifiedWorker()
+      allow read: if isVerifiedWorker() || isAdmin()
         || (signedIn() && resource.data.patientId == request.auth.uid);
       allow create: if isVerifiedWorker()
         || (signedIn()
@@ -68,10 +82,14 @@ service cloud.firestore {
     }
 
     match /notes/{noteId} {
-      allow read: if isVerifiedWorker();
+      allow read: if isVerifiedWorker() || isAdmin();
       allow create: if isVerifiedWorker() && request.resource.data.authorId == request.auth.uid;
       allow update: if false;
       allow delete: if isVerifiedWorker() && resource.data.get('demo', false) == true;
+    }
+
+    match /settings/{document=**} {
+      allow read, write: if false;
     }
   }
 }

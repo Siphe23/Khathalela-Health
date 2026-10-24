@@ -10,7 +10,7 @@ const MESSAGES = {
   'auth/too-many-requests': 'Too many attempts. Please wait a few minutes and try again.',
   'auth/user-disabled': 'This account has been disabled. Please contact support.',
   'auth/operation-not-allowed': 'Email sign-in is not switched on yet. (Developer: enable Email/Password in Firebase.)',
-  'permission-denied': 'We could not save your profile. Please try again.',
+  'permission-denied': 'We could not save your profile. If you are registering as an administrator, check your invitation code. Otherwise please try again.',
   unavailable: 'We could not reach the server. Check your internet connection and try again.',
 };
 

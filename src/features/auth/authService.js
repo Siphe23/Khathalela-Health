@@ -25,10 +25,12 @@ async function loadProfile(uid) {
 
 // Builds the small plain object we keep in Redux. No password, no medical data.
 function toUser(firebaseUser, profile) {
-  const role = profile && isValidRole(profile.role) ? profile.role : null;
+  // 'admin' is set by hand in the Firebase console. It is never offered on the sign-up pages.
+  const role = profile && (isValidRole(profile.role) || profile.role === 'admin') ? profile.role : null;
   const details = {};
-  if (role) {
+  if (role && ROLES[role]) {
     ROLES[role].fields.forEach((field) => {
+      if (field.secret) return; // never keep the invitation code in the app's memory
       details[field.name] = profile[field.name] ?? '';
     });
   }

@@ -26,7 +26,7 @@ function Profile() {
       <div className="profile-top">
         <Avatar name={user.displayName} size={96} />
         <h2>{user.displayName || 'Your name'}</h2>
-        <p className="muted">{role ? role.label : 'Member'} · ID: {memberId(user.uid)}</p>
+        <p className="muted">{role ? role.label : user.role === 'admin' ? 'Administrator' : 'Member'} · ID: {memberId(user.uid)}</p>
       </div>
 
       <div className="list-card">

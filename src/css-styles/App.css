@@ -417,3 +417,7 @@ button.back-link { border: none; background: none; padding: 0; font-family: inhe
   .topnav .nav-link { width: 100%; min-height: 50px; padding: 0 16px; border-radius: 14px; }
   .nav-logout { display: inline-flex; color: #8a3b12; }
 }
+
+/* Administrator pages */
+.chips-plain { padding: 0; margin-bottom: 20px; border-bottom: none; }
+.worker-card .inline-form { margin-top: 12px; }

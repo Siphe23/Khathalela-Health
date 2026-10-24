@@ -44,6 +44,18 @@ export function watchWorkerData(handlers) {
   return () => stops.forEach((stop) => stop());
 }
 
+// Administrators read the accounts (users) plus the clinic records (read only).
+export function watchAdminData(handlers) {
+  const stops = ['users', 'patients', 'appointments', 'notes'].map(
+    (name) => listen(collection(db, name), name, handlers)
+  );
+  return () => stops.forEach((stop) => stop());
+}
+
+// Administrator action: approve, reject or revoke a healthcare worker.
+// status is 'verified', 'rejected' or 'pending'. Only this one field can be changed.
+export const setWorkerStatus = (uid, status) => updateDoc(doc(db, 'users', uid), { verificationStatus: status });
+
 // ---------- Patient records ----------
 
 export function buildPatientRecord(uid, { fullName, phone, details }) {

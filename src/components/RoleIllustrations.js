@@ -27,9 +27,21 @@ export function WorkerIllustration() {
   );
 }
 
+export function AdminIllustration() {
+  return (
+    <svg viewBox="0 0 96 96" aria-hidden="true">
+      <rect width="96" height="96" fill="#e6f0e8" />
+      <path d="M48 12 L78 24 V46 C78 64 64 77 48 84 C32 77 18 64 18 46 V24 Z" fill="#174d3a" />
+      <path d="M48 24 V70 C37 64 28 55 28 46 V31 Z" fill="#1f6149" />
+      <path d="M34 47 L44 57 L63 36" fill="none" stroke="#d9ae58" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function RoleImage({ role }) {
   if (role.image) {
     return <img src={role.image} alt="" className="role-img" />;
   }
+  if (role.id === 'admin') return <AdminIllustration />;
   return role.id === 'worker' ? <WorkerIllustration /> : <PatientIllustration />;
 }
