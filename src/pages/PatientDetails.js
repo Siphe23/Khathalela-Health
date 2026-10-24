@@ -11,7 +11,7 @@ import useAsyncAction from '../hooks/useAsyncAction';
 import {
   addNote, scheduleAppointment, addMedication, removeMedication, DEFAULT_CLINIC,
 } from '../features/care/careService';
-import { nextVisit, lastVisit } from '../features/care/careSelectors';
+import { nextVisit, lastVisit, doseSummary } from '../features/care/careSelectors';
 import { REASONS } from '../config/reasons';
 import { formatDate, millisToISO, todayISO, STATUS_LABELS } from '../utils/format';
 
@@ -20,7 +20,7 @@ const TYPES = ['General Check-up', 'Medication Collection', 'Follow-up', 'Medica
 function PatientDetails() {
   const { patientId } = useParams();
   const user = useSelector((state) => state.auth.user);
-  const { patients, appointments, medications, notes, loaded } = useSelector((state) => state.care);
+  const { patients, appointments, medications, notes, doseLogs, loaded } = useSelector((state) => state.care);
   const { run, busy, error, clearError } = useAsyncAction();
 
   const patient = patients.find((p) => p.id === patientId);
@@ -47,6 +47,8 @@ function PatientDetails() {
   const myAppointments = appointments.filter((a) => a.patientId === patient.id);
   const myMeds = medications.filter((m) => m.patientId === patient.id);
   const myNotes = notes.filter((n) => n.patientId === patient.id).sort((a, b) => b.createdAt - a.createdAt);
+  const summary = doseSummary(doseLogs.filter((l) => l.patientId === patient.id), myMeds);
+  const missedCount = myAppointments.filter((a) => a.status === 'missed').length;
   const next = nextVisit(appointments, patient.id);
   const last = lastVisit(appointments, patient.id);
   const history = myAppointments
@@ -111,6 +113,16 @@ function PatientDetails() {
 
       {tab === 'overview' ? (
         <>
+          <section className="card care-summary" aria-labelledby="care-summary">
+            <h3 id="care-summary" className="card-title"><Icon name="clipboard" size={18} /> Care summary</h3>
+            <dl className="details-list">
+              <div><dt>Medication records (last 7 days)</dt><dd>{myMeds.length === 0 ? 'No medication recorded' : `${summary.taken} of ${summary.expected} doses marked as taken · ${summary.missed} missed · ${summary.notRecorded} not recorded`}</dd></div>
+              <div><dt>Upcoming appointment</dt><dd>{next ? `${formatDate(next.date)}${next.time ? ` at ${next.time}` : ''}` : 'None booked'}</dd></div>
+              <div><dt>Missed appointments</dt><dd>{missedCount} recorded</dd></div>
+              <div><dt>Patient's reported concern</dt><dd>{patient.concern ? `${patient.concern}${patient.concernNote ? ` · ${patient.concernNote}` : ''}` : 'Nothing reported'}</dd></div>
+            </dl>
+            <p className="muted small">Reported by the patient. It does not prove how medicine was taken, and it is not a diagnosis. Decisions stay with the clinician.</p>
+          </section>
           <section className="card">
             <h3 className="card-title"><Icon name="calendar" size={18} /> Next Appointment</h3>
             {next ? (

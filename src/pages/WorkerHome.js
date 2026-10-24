@@ -6,32 +6,31 @@ import Icon from '../components/Icon';
 import ClinicQR from '../components/ClinicQR';
 import useAsyncAction from '../hooks/useAsyncAction';
 import {
-  approveRequest, checkInAppointment, completeAppointment, markMissed,
+  checkInAppointment, completeAppointment, markMissed, resolveHelpRequest,
   seedDemoData, clearDemoData,
 } from '../features/care/careService';
 import {
-  todaysAppointments, requestedAppointments, missedAppointments, followUpGroups,
+  todaysAppointments, openHelpRequests, missedAppointments, followUpGroups,
 } from '../features/care/careSelectors';
 import { REASONS } from '../config/reasons';
-import { formatDate } from '../utils/format';
+import { clockTime } from '../utils/format';
 
 // Demo tools are hidden unless you add REACT_APP_DEMO_TOOLS=true to your .env file.
 const SHOW_DEMO_TOOLS = process.env.REACT_APP_DEMO_TOOLS === 'true';
 
 function WorkerHome() {
   const user = useSelector((state) => state.auth.user);
-  const { appointments, patients, loaded } = useSelector((state) => state.care);
+  const { appointments, patients, helpRequests, loaded } = useSelector((state) => state.care);
   const { run, busy, error } = useAsyncAction();
 
   const [showAll, setShowAll] = useState(false);
   const [missedFor, setMissedFor] = useState(null);
   const [reason, setReason] = useState('transport');
-  const [times, setTimes] = useState({});
   const [notice, setNotice] = useState('');
 
   const verified = user.verificationStatus === 'verified';
   const today = todaysAppointments(appointments);
-  const requests = requestedAppointments(appointments);
+  const urgent = openHelpRequests(helpRequests);
   const missedOpen = missedAppointments(appointments).filter((a) => !a.followedUp).length;
   const pending = followUpGroups(appointments).reduce((total, group) => total + group.items.length, 0);
   const shown = showAll ? today : today.slice(0, 3);
@@ -98,27 +97,25 @@ function WorkerHome() {
         <span className="row-arrow"><Icon name="chevron" size={18} /></span>
       </Link>
 
-      {requests.length > 0 && (
-        <>
-          <h2 className="section-title">Appointment Requests</h2>
+      {urgent.length > 0 && (
+        <section className="card card-urgent" aria-labelledby="urgent">
+          <h2 id="urgent" className="card-title">Urgent help requests ({urgent.length})</h2>
           <ul className="plain-list">
-            {requests.map((r) => (
-              <li key={r.id} className="card tight">
-                <p className="strong">{r.patientName}</p>
-                <p className="meta muted">{r.type} · {formatDate(r.date)} · {r.clinic}</p>
-                <div className="inline-form">
-                  <label htmlFor={`time-${r.id}`} className="small muted">Time</label>
-                  <input id={`time-${r.id}`} type="time" value={times[r.id] || '09:00'}
-                    onChange={(e) => setTimes({ ...times, [r.id]: e.target.value })} />
-                  <button type="button" className="btn-sm solid" disabled={busy}
-                    onClick={() => run(() => approveRequest(r.id, times[r.id] || '09:00'))}>
-                    Approve
-                  </button>
-                </div>
+            {urgent.map((r) => (
+              <li key={r.id} className="line">
+                <span className="row-text">
+                  <Link to={`/patients/${r.patientId}`}><strong>{r.patientName}</strong></Link>
+                  <span>{r.message || 'No message'}</span>
+                  <span className="small muted">{r.createdAt ? `Asked at ${clockTime(new Date(r.createdAt))}` : 'Just now'}</span>
+                </span>
+                <span className="btn-pair">
+                  {r.phone && <a className="btn-sm solid" href={`tel:${r.phone}`}>Call {r.phone}</a>}
+                  <button type="button" className="btn-sm" disabled={busy} onClick={() => run(() => resolveHelpRequest(r.id, user))}>Mark as helped</button>
+                </span>
               </li>
             ))}
           </ul>
-        </>
+        </section>
       )}
 
       <div className="card-head">

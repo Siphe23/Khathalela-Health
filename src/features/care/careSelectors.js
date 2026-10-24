@@ -33,6 +33,21 @@ export const recentMissed = (appointments) => {
   return missedAppointments(appointments).filter((a) => a.date >= cutoff);
 };
 
+// The last 7 days of medication records the patient entered (patient-reported)
+export function doseSummary(doseLogs, medications, today = todayISO()) {
+  const from = addDays(today, -6);
+  const ids = new Set(medications.map((m) => m.id));
+  const logs = doseLogs.filter((l) => ids.has(l.medicationId) && l.date >= from && l.date <= today);
+  const taken = logs.filter((l) => l.status === 'taken').length;
+  const missed = logs.filter((l) => l.status === 'missed').length;
+  const expected = medications.length * 7;
+  return { expected, taken, missed, notRecorded: Math.max(0, expected - taken - missed) };
+}
+
+export const openHelpRequests = (list) => list
+  .filter((r) => r.status === 'open')
+  .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
 // The to-do groups on the Follow-up Actions screen, worked out from missed visits
 export function followUpGroups(appointments) {
   const missed = missedAppointments(appointments);

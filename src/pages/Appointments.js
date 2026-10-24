@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import AppShell from '../components/AppShell';
 import Tabs from '../components/Tabs';
 import Icon from '../components/Icon';
+import CalendarButtons from '../components/CalendarButtons';
 import { formatDate, STATUS_LABELS } from '../utils/format';
 
 function Appointments() {
@@ -49,6 +50,7 @@ function Appointments() {
               <div className="detail-box">
                 <p><span className="muted">Status:</span> <span className={`badge ${a.status}`}>{STATUS_LABELS[a.status]}</span></p>
                 {a.status === 'requested' && <p className="muted">Your clinic will confirm the date and time.</p>}
+                {a.status === 'upcoming' && <CalendarButtons appointment={a} />}
                 {a.status === 'upcoming' && (
                   <Link to="/scan" className="btn btn-secondary btn-block btn-link">Scan QR to check in</Link>
                 )}

@@ -15,8 +15,9 @@ const NAV = {
     { to: '/dashboard', label: 'Home', icon: 'home' },
     { to: '/appointments', label: 'Appointments', icon: 'calendar' },
     { to: '/medications', label: 'Medication', icon: 'pill' },
-    { to: '/help', label: 'Help', icon: 'help' },
+    { to: '/progress', label: 'Progress', icon: 'clipboard' },
     { to: '/profile', label: 'Profile', icon: 'user' },
+    { to: '/urgent', label: 'Need help now', icon: 'alert', urgent: true },
   ],
   admin: [
     { to: '/dashboard', label: 'Dashboard', icon: 'home' },
@@ -68,7 +69,7 @@ function AppShell({ title, subtitle, backTo, backLabel = 'Back', actions, right,
 
           <nav id="main-menu" className={menuOpen ? 'topnav open' : 'topnav'} aria-label="Main menu">
             {items.map((item) => (
-              <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+              <NavLink key={item.to} to={item.to} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}${item.urgent ? ' urgent' : ''}`}>
                 <Icon name={item.icon} size={18} />
                 <span>{item.label}</span>
               </NavLink>

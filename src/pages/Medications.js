@@ -1,16 +1,23 @@
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AppShell from '../components/AppShell';
 import Icon from '../components/Icon';
 import Switch from '../components/Switch';
 import useAsyncAction from '../hooks/useAsyncAction';
-import { setMedicationReminder } from '../features/care/careService';
+import { setMedicationReminder, logDose } from '../features/care/careService';
 import { nextCollection } from '../features/care/careSelectors';
-import { formatDate } from '../utils/format';
+import { formatDate, todayISO } from '../utils/format';
 
 function Medications() {
-  const { medications, appointments, loaded } = useSelector((state) => state.care);
+  const user = useSelector((state) => state.auth.user);
+  const { medications, appointments, doseLogs, loaded } = useSelector((state) => state.care);
   const { run, error } = useAsyncAction();
   const collection = nextCollection(appointments);
+  const today = todayISO();
+  const todayStatus = (medId) => {
+    const found = doseLogs.find((l) => l.medicationId === medId && l.date === today);
+    return found ? found.status : null;
+  };
 
   return (
     <AppShell title="Medication Reminders">
@@ -52,9 +59,22 @@ function Medications() {
               <Switch checked={Boolean(med.reminder)} label={`Remind me about ${med.name}`}
                 onChange={() => run(() => setMedicationReminder(med.id, !med.reminder))} />
             </span>
+            <div className="dose-row">
+              <span className="small muted">Today:</span>
+              <button type="button" aria-pressed={todayStatus(med.id) === 'taken'}
+                className={todayStatus(med.id) === 'taken' ? 'btn-sm solid' : 'btn-sm'}
+                onClick={() => run(() => logDose(user, med, today, 'taken'))}>Taken</button>
+              <button type="button" aria-pressed={todayStatus(med.id) === 'missed'}
+                className={todayStatus(med.id) === 'missed' ? 'btn-sm solid' : 'btn-sm'}
+                onClick={() => run(() => logDose(user, med, today, 'missed'))}>Missed</button>
+              {!todayStatus(med.id) && <span className="small muted">Not recorded</span>}
+            </div>
           </li>
         ))}
       </ul>
+      <p className="muted small">
+        Taken and Missed are what you tell us. Your nurse can see them in your care summary. See your week in <Link to="/progress">My Care Progress</Link>.
+      </p>
       <p className="muted small">
         Your choice is saved. Reminder messages will start once SMS or app notifications are connected.
       </p>

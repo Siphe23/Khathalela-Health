@@ -421,3 +421,38 @@ button.back-link { border: none; background: none; padding: 0; font-family: inhe
 /* Administrator pages */
 .chips-plain { padding: 0; margin-bottom: 20px; border-bottom: none; }
 .worker-card .inline-form { margin-top: 12px; }
+
+/* ---------- Booking, urgent help, care progress ---------- */
+.day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 8px; }
+.day-chip { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; text-align: left; background: #fff; border: 1.5px solid var(--grey-border); border-radius: 14px; font-family: inherit; color: var(--ink); cursor: pointer; }
+.day-chip span { font-size: 0.85rem; color: var(--ink-soft); }
+.day-chip:hover:not(:disabled) { border-color: var(--teal); }
+.day-chip.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+.day-chip.active span { color: #e6f0e8; }
+.day-chip:disabled { background: #eceeea; color: var(--ink-soft); cursor: not-allowed; }
+.slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; margin-bottom: 8px; }
+.slot { display: flex; flex-direction: column; align-items: center; min-height: 56px; padding: 8px; background: #fff; border: 1.5px solid var(--grey-border); border-radius: 12px; font-family: inherit; font-weight: 700; color: var(--ink); cursor: pointer; }
+.slot small { font-weight: 400; color: var(--ink-soft); }
+.slot:hover:not(:disabled) { border-color: var(--teal); }
+.slot.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+.slot.active small { color: #e6f0e8; }
+.slot:disabled { background: #eceeea; color: #9aa39d; cursor: not-allowed; text-decoration: line-through; }
+.tight-top { margin-top: 12px; }
+.center-title { justify-content: center; }
+.cal-buttons { flex-wrap: wrap; justify-content: center; margin: 12px 0; }
+
+.card-urgent { background: #fdecea; border-color: #e5a29c; }
+.card-urgent .card-title { color: #8a1c14; }
+a.card-urgent:hover { border-color: #b3261e; }
+.nav-link.urgent { background: #b3261e; color: #fff; }
+.nav-link.urgent:hover { background: #8a1c14; }
+.nav-link.urgent.active { background: #8a1c14; }
+
+.dose-row { display: flex; align-items: center; gap: 8px; flex-basis: 100%; padding-top: 10px; border-top: 1px dashed var(--grey-border); }
+.med { flex-wrap: wrap; }
+.progress-list { margin-top: 14px; }
+.scan-why { margin-top: 20px; }
+.scan-page .scan-why .card-title { color: #0b0b0b; }
+.care-summary .details-list { margin-bottom: 10px; }
+.btn-pair { flex-wrap: wrap; }
+.btn-pair .btn-sm { white-space: normal; text-align: center; }

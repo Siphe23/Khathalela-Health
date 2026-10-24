@@ -4,14 +4,15 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AppShell from '../components/AppShell';
 import Icon from '../components/Icon';
-import { checkInAppointment } from '../features/care/careService';
+import { checkInAppointment, checkInWalkIn } from '../features/care/careService';
 import { nextVisit } from '../features/care/careSelectors';
 import { getCareErrorMessage } from '../features/care/careErrors';
-import { formatDate } from '../utils/format';
+import { formatDate, todayISO } from '../utils/format';
 
 import { CLINIC_PREFIX, CLINIC_CODE as DEMO_CODE } from '../config/clinicCode';
 
 function ScanQR() {
+  const user = useSelector((state) => state.auth.user);
   const appointments = useSelector((state) => state.care.appointments);
   const next = nextVisit(appointments.filter((a) => a.status === 'upcoming'));
 
@@ -29,19 +30,26 @@ function ScanQR() {
       setResult({ ok: false, text: 'That is not a Khatalela-Impilo clinic code. Please scan the QR code at the clinic.' });
       return;
     }
-    if (!next) {
-      setResult({ ok: false, text: 'You have no confirmed upcoming appointment to check in to.' });
+    const alreadyIn = appointments.find((a) => a.status === 'checked-in' && a.date === todayISO());
+    if (alreadyIn) {
+      handledRef.current = true;
+      setResult({ ok: true, text: 'You are already checked in. Please wait to be called.' });
       return;
     }
     handledRef.current = true; // stop the camera reading the same code again and again
     try {
-      await checkInAppointment(next.id);
-      setResult({ ok: true, text: `You are checked in for ${next.type} on ${formatDate(next.date)} at ${next.clinic}.` });
+      if (next) {
+        await checkInAppointment(next.id);
+        setResult({ ok: true, text: `You are checked in for ${next.type} on ${formatDate(next.date)} at ${next.clinic}. The nurse can see you are here.` });
+      } else {
+        await checkInWalkIn(user, user.details && user.details.preferredClinic);
+        setResult({ ok: true, text: 'You are checked in as a walk-in. You did not need a booking. The nurse can see you are here.' });
+      }
     } catch (error) {
       handledRef.current = false;
       setResult({ ok: false, text: getCareErrorMessage(error) });
     }
-  }, [next]);
+  }, [next, appointments, user]);
 
   const handleRef = useRef(handleCode);
   useEffect(() => {
@@ -107,7 +115,15 @@ function ScanQR() {
         {camera !== 'scanning' && <span className="scan-placeholder"><Icon name="qr" size={72} /></span>}
         <span className="corner tl" /><span className="corner tr" /><span className="corner bl" /><span className="corner br" />
       </div>
-      <p className="center muted">Scan your appointment QR code at the clinic</p>
+      <p className="center muted">Scan the QR code at the clinic</p>
+
+      <section className="card scan-why" aria-labelledby="why-scan">
+        <h2 id="why-scan" className="card-title">Why scan?</h2>
+        <p className="muted">
+          Scanning tells the clinic you have arrived. Your name moves to the nurse's "checked in" list straight away,
+          so you do not have to queue just to say you are here. If you have no booking, scanning still checks you in as a walk-in.
+        </p>
+      </section>
 
       {camera === 'unsupported' && (
         <p className="banner banner-info" role="status">

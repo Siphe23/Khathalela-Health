@@ -18,9 +18,18 @@ function PatientHome() {
     <AppShell wide title={`${greeting()}, ${firstName}`} subtitle="Stay healthy. Stay connected.">
       {requests > 0 && (
         <div className="banner banner-info" role="status">
-          You have {requests} appointment request{requests === 1 ? '' : 's'} waiting for your clinic to confirm.
+          You have {requests} older appointment request{requests === 1 ? '' : 's'} that your clinic has not confirmed yet.
         </div>
       )}
+
+      <Link to="/urgent" className="card card-urgent link-card">
+        <span className="row-icon red"><Icon name="alert" /></span>
+        <span className="row-text">
+          <strong>Need help now?</strong>
+          <span>No appointment needed. Tell your clinic or call an ambulance.</span>
+        </span>
+        <span className="row-arrow"><Icon name="chevron" size={18} /></span>
+      </Link>
 
       <div className="grid grid-side">
       <div className="stack">
@@ -70,6 +79,9 @@ function PatientHome() {
         </Link>
         <Link to="/appointments" className="quick">
           <span className="quick-icon"><Icon name="calendar" /></span>My Appointments
+        </Link>
+        <Link to="/progress" className="quick">
+          <span className="quick-icon"><Icon name="clipboard" /></span>My Care Progress
         </Link>
         <Link to="/help" className="quick">
           <span className="quick-icon"><Icon name="help" /></span>Get Help

@@ -21,6 +21,8 @@ import PatientDetails from './pages/PatientDetails';
 import Missed from './pages/Missed';
 import FollowUps from './pages/FollowUps';
 import Summary from './pages/Summary';
+import UrgentHelp from './pages/UrgentHelp';
+import Progress from './pages/Progress';
 import AdminUsers from './pages/AdminUsers';
 import AdminActivity from './pages/AdminActivity';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -67,6 +69,8 @@ function App() {
         <Route path="/appointments" element={<ProtectedRoute role="patient"><Appointments /></ProtectedRoute>} />
         <Route path="/appointments/new" element={<ProtectedRoute role="patient"><BookAppointment /></ProtectedRoute>} />
         <Route path="/medications" element={<ProtectedRoute role="patient"><Medications /></ProtectedRoute>} />
+        <Route path="/progress" element={<ProtectedRoute role="patient"><Progress /></ProtectedRoute>} />
+        <Route path="/urgent" element={<ProtectedRoute role="patient"><UrgentHelp /></ProtectedRoute>} />
         <Route path="/scan" element={<ProtectedRoute role="patient"><ScanQR /></ProtectedRoute>} />
 
         {/* Healthcare workers only */}

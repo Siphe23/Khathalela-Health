@@ -6,10 +6,13 @@ import { createSlice } from '@reduxjs/toolkit';
 const emptyLists = () => ({
   users: [], // only filled for administrators
   patients: [],
+  slots: [],
+  doseLogs: [],
+  helpRequests: [],
   appointments: [],
   medications: [],
   notes: [],
-  loaded: { users: false, patients: false, appointments: false, medications: false, notes: false },
+  loaded: { users: false, slots: false, doseLogs: false, helpRequests: false, patients: false, appointments: false, medications: false, notes: false },
   error: null,
 });
 
