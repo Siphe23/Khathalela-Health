@@ -1,166 +1,185 @@
-# Khathalela Health 💚
+# Khatalela-Impilo (Khathalela Health)
 
-### Making healthcare easier to manage, one patient at a time.
+A web app that helps people living with chronic illness keep their clinic visits and medication on track, and helps clinic staff see who needs help. Built for the **FNB App of the Year Hackathon 2026**.
 
-Khathalela Health is a healthcare application I am developing to help people, especially those living in rural communities, manage their healthcare more easily.
+> **All data in the demo is fictional. No real patient information is used.**
 
-The idea came from learning about some of the challenges patients experience when accessing healthcare, particularly people living with chronic illnesses who need regular medication and follow-up appointments.
+- Live app: https://khathalela-health.vercel.app/
+- Source code: https://github.com/Siphe23/Khathalela-Health
 
-I wanted to explore how technology could help patients stay on track with their healthcare while also supporting healthcare workers with follow-ups.
+## The problem
 
-This project is part of my journey as a developer and my participation in the **FNB App of the Year Hackathon 2026**.
+For many people in rural areas, getting chronic care means travel, long waits and missed visits. A missed visit often becomes a missed medication collection. Clinics then find out late. Khatalela-Impilo aims to make the next step clearer for the patient and earlier to see for the clinic. It does not promise shorter queues or automatic medicine delivery.
 
-## 💡 The Problem
+## Who uses it
 
-Accessing healthcare is not always easy for everyone.
+| Role | What they can do |
+|---|---|
+| **Patient** | Book a time slot (up to 2 people per time), save it to a calendar, mark medication as Taken or Missed, record what makes care hard, scan the clinic QR code to check in, send a "Need help now" request |
+| **Healthcare worker** | See today's visits, check patients in or mark them missed, see urgent requests, follow up missed visits, read a care summary for each patient, show the clinic QR code |
+| **Administrator** | Approve or reject healthcare workers, see users and activity |
 
-Some patients have to travel long distances to reach a clinic, spend hours waiting in queues, or struggle with transport costs. For people who need regular chronic medication, these challenges can make it harder to attend appointments and manage their treatment.
+Healthcare workers can see patient information only after an administrator marks them as **verified**.
 
-Healthcare workers also need practical ways to organise follow-ups and identify patients who may need additional support.
+## Features
 
-I wanted to work on a solution that addresses some of these challenges through technology.
+- Sign up and log in with email and password (Firebase Authentication)
+- Time-slot booking, with fully booked times and days shown as full
+- Save a booking to Google Calendar, or download an `.ics` file for other calendars
+- Medication tracking: Taken or Missed, reported by the patient
+- "My Care Progress" page and a concern form
+- "Need help now": an urgent request that shows at the top of the nurse's screen, plus emergency numbers **10177** (ambulance) and **112** (any cellphone)
+- Clinic QR check-in: the QR holds a web link, so a phone's normal camera can open it. The in-app Scan page also reads it, or reads it from a photo
+- Care summary for workers, based on simple rules (not AI)
+- Administrator pages for approvals, users and activity
+- Web layout with a top menu that becomes a hamburger menu on narrow screens
 
-## 🌱 My Solution
+## Tech stack
 
-Khathalela Health is my attempt to make managing healthcare a little easier.
+- Create React App (JavaScript)
+- Redux Toolkit
+- React Router
+- Firebase Authentication and Cloud Firestore (no Firebase Storage)
+- `jsqr` (reads QR codes from the camera) and `qrcode.react` (draws the clinic QR code)
+- Plain CSS in `src/css-styles/`
+- Hosted on Vercel
 
-The goal is to create a simple, accessible application where patients can manage important parts of their healthcare journey without having to navigate a complicated system.
+## Getting started
 
-I also want to explore how AI could help healthcare teams organise follow-up information and identify common challenges patients experience.
+### 1. Install
 
-My focus is on building something practical, easy to use, and relevant to the people it is designed to support.
+You need [Node.js](https://nodejs.org/) (version 18 or newer).
 
-## ✨ Planned Features
-
-The following are the features I am working towards:
-
-- **Patient registration and login**: allowing users to create accounts and access the application.
-- **Onboarding**: introducing new users to the application and its purpose.
-- **Appointment management**: helping patients keep track of their healthcare appointments.
-- **Medication reminders**: helping patients remember their medication schedules.
-- **Follow-up support**: exploring ways to help healthcare teams organise patient follow-ups.
-- **AI-assisted support**: exploring how AI could summarise follow-up notes and highlight recurring barriers, with healthcare workers reviewing the information.
-
-These features will be implemented and tested as development progresses. Not all of them are available yet.
-
-## 🛠️ Technology Stack
-
-I plan to use the following technologies to build Khathalela Health:
-
-- **React.js** - building the user interface.
-- **Redux Toolkit** - managing application state.
-- **Firebase Authentication** - handling user registration, login, and authentication.
-- **JavaScript** - implementing application functionality.
-- **HTML5** - structuring the application.
-- **CSS3** - styling the interface and making it responsive.
-- **Git and GitHub** - version control and project management.
-
-I am building the application step by step, starting with the user interface and authentication flow before expanding the functionality.
-
-## 🚀 Getting Started
-
-If you would like to explore the project locally, follow these steps.
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-- Node.js
-- npm
-- Git
-
-### 1. Clone the repository
-
-bash
+```bash
 git clone https://github.com/Siphe23/Khathalela-Health.git
-
-
-### 2. Open the project folder
-
-bash
 cd Khathalela-Health
-
-
-### 3. Install dependencies
-
-bash
 npm install
+npm install jsqr qrcode.react
+```
 
+### 2. Create a Firebase project
 
-### 4. Start the development server
+1. Go to the [Firebase Console](https://console.firebase.google.com/) and create a project.
+2. **Authentication** → Sign-in method → turn on **Email/Password**.
+3. **Firestore Database** → create a database.
+4. **Project settings** → Your apps → add a **Web app** and copy its settings.
 
-bash
+### 3. Add your settings
+
+Create a file named `.env` in the project root, next to `package.json`:
+
+```
+REACT_APP_FIREBASE_API_KEY=
+REACT_APP_FIREBASE_AUTH_DOMAIN=
+REACT_APP_FIREBASE_PROJECT_ID=
+REACT_APP_FIREBASE_STORAGE_BUCKET=
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=
+REACT_APP_FIREBASE_APP_ID=
+
+# Optional
+REACT_APP_PUBLIC_URL=https://your-app.vercel.app
+REACT_APP_DEMO_TOOLS=false
+```
+
+- `REACT_APP_PUBLIC_URL` is the website address the clinic QR code points to. Set it to your deployed address so phones can open it. Without it, the QR uses the address the worker page is open on (`localhost` does not work on a phone). No slash at the end.
+- `REACT_APP_DEMO_TOOLS=true` shows a "Demo tools" card on the worker dashboard that loads fictional patients and visits. Leave it off for real use.
+
+React reads `.env` only when it starts, so restart `npm start` after changing it. The `.env` file must never be committed to Git.
+
+### 4. Publish the Firestore rules
+
+The rules are the real protection for the data.
+
+1. Firebase Console → Firestore Database → **Rules**.
+2. Replace everything with the contents of `firestore.rules` from this project.
+3. Click **Publish**.
+
+### 5. Create the administrator invitation code
+
+Administrator sign-up needs a secret code that you create:
+
+1. Firestore Database → **Start collection** → collection ID `settings`.
+2. Document ID `adminInvite`.
+3. Add a field named `code` (type string) with your secret code.
+
+The code is case sensitive. After your administrator account exists, change the code so it can't be reused.
+
+### 6. Run
+
+```bash
 npm start
+```
 
+Open http://localhost:3000.
 
-If the project is configured with Create React App, the application should open at:
+## Trying the app
 
-"http://localhost:3000"
+1. **Register an administrator**: choose Administrator and enter the invitation code.
+2. **Register a healthcare worker**. They start as *pending*. Sign in as the administrator and approve them.
+3. **Register a patient** in another browser or a private window.
+4. As the patient, book a slot, mark medication, and press "Need help now".
+5. As the worker, open the dashboard, show the clinic QR code, and watch the patient appear.
+6. As the patient, scan the QR code (or use the manual code box) to check in.
 
-If Firebase has not yet been configured, authentication features will require additional setup before they can work.
+The Scan page needs camera access, which browsers allow only on `https://` addresses and `localhost`. If the camera does not work, use "Scan from a photo or screenshot" or type the clinic code.
 
-## 🔐 Firebase Authentication
+## Project structure
 
-Firebase Authentication is part of the planned implementation for managing user accounts.
+```
+src/
+  app/               Redux store
+  components/        Shared pieces (AppShell menu, QR code, route guards)
+  config/            Roles, booking rules, clinic code
+  css-styles/        App.css and other styles
+  data/              Fictional demo data
+  features/
+    auth/            Sign-up, login, auth listener
+    care/            Firestore reads and writes, Redux slice, selectors
+  firebase/          Firebase setup
+  pages/             One file per page
+  utils/             Dates, slots, calendar export
+firestore.rules      Security rules to publish in Firebase
+```
 
-The intended authentication features include:
+## Deploying to Vercel
 
-- Creating an account using an email address and password.
-- Logging into an existing account.
-- Logging out securely through Firebase Authentication.
-- Resetting forgotten passwords.
-- Maintaining the user's authentication state.
+1. Push the project to GitHub and import it in [Vercel](https://vercel.com/).
+2. Add every variable from your `.env` under Project → Settings → **Environment Variables**, including `REACT_APP_PUBLIC_URL`.
+3. Deploy.
+4. In Firebase Console → Authentication → Settings → **Authorized domains**, add your Vercel domain.
+5. Redeploy after changing any variable, because React reads them at build time.
 
-Firebase configuration must be completed before these features can be tested.
+## Security
 
-**Security note:** Firebase web configuration is not a substitute for proper security controls. Private service-account credentials and administrative keys must never be committed to this repository.
+- Sign-in uses Firebase Authentication. The app never stores passwords.
+- Access control is enforced by Firestore security rules, not just by hiding buttons.
+- Healthcare workers must be verified by an administrator before they can read patient data.
+- Patients can read only their own records, and can change only the fields they are allowed to.
+- Administrator sign-up needs the invitation code.
+- The Firebase config values are not secrets. Protection comes from the rules.
 
-## 🌍 Who Is This For?
+## Known limitations
 
-Khathalela Health is being designed with the following users in mind:
+Please be honest about these when presenting:
 
-- Patients who need regular chronic healthcare and medication.
-- People who experience difficulties accessing healthcare services.
-- Healthcare workers who coordinate patient follow-ups.
-- Communities that could benefit from more accessible digital healthcare support.
+- The Firestore rules have not been tested on the Firebase emulator.
+- Slot capacity is checked in the browser and the rules, but a determined attacker could bypass it. A real product needs a server function for booking.
+- The calendar link is a one-time export, not a live sync.
+- Medication reminders are a saved setting only. No SMS or push notifications are connected yet.
+- The care summary is rule-based. It is not AI.
+- Medication records are reported by the patient, not confirmed by the clinic.
+- Urgent requests reach a healthcare worker only while they have the dashboard open. They do not replace emergency services.
+- Records belong to one account and a preferred-clinic field. There is no transfer-between-clinics or relocation flow yet.
+- No legal review against POPIA has been done.
 
-The goal is to create a useful, understandable experience for people with different levels of digital literacy.
+## Roadmap
 
-## 🔮 Future Improvements
+- Clinic transfer ("I have moved") request, so a new clinic can see a patient's medication list and visit history
+- SMS reminders
+- A server function for booking and urgent requests
+- POPIA review and audit trail of administrator approvals
+- Pilot with a clinic and learn from patients and nurses
 
-As I continue developing the application, I would like to explore:
+## Author
 
-- Improving the patient experience through a simple and accessible interface.
-- Adding more complete appointment and medication management functionality.
-- Developing useful tools for healthcare workers.
-- Exploring AI-assisted follow-up summaries.
-- Improving accessibility for users in rural communities.
-- Testing the application and gathering feedback to guide future improvements.
-
-These ideas will depend on development progress, testing, and what is practical to implement.
-
-## 🧪 Development Status
-
-Khathalela Health is currently a work in progress.
-
-I am developing this project as part of the FNB App of the Year Hackathon 2026 while continuing to learn and improve my skills in React.js, state management, and Firebase.
-
-My focus is on building the application in stages, testing the functionality, and improving the experience as I go.
-
-## ❤️ Why I Started This Project
-
-I believe technology can help address real problems when we take the time to understand the people experiencing them.
-
-Khathalela Health is an opportunity for me to apply what I have been learning as a developer to a challenge that matters to me.
-
-I want to build something that goes beyond having a nice interface. I want to understand the problem, create a practical solution, and keep improving it through feedback and testing.
-
-For me, this project is about exploring how technology can support better access to healthcare and make the patient experience easier to manage.
-
-
-
-**Built by Nasiphi Ndzumo** 🇿🇦
-
-GitHub: [Siphe23](https://github.com/Siphe23)
-
-Project repository: [Khathalela Health](https://github.com/Siphe23/Khathalela-Health)
+Built by Siphesihle Mzamane for the FNB App of the Year Hackathon 2026.
