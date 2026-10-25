@@ -456,3 +456,28 @@ a.card-urgent:hover { border-color: #b3261e; }
 .care-summary .details-list { margin-bottom: 10px; }
 .btn-pair { flex-wrap: wrap; }
 .btn-pair .btn-sm { white-space: normal; text-align: center; }
+
+/* ---------- Fit fixes: rows and buttons wrap instead of overlapping ---------- */
+.appt-row, .line, .med { flex-wrap: wrap; }
+.appt-row > .row-text, .line > .row-text, .med > .row-text { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
+.btn-pair { flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; max-width: 100%; }
+.btn-sm { flex-shrink: 0; max-width: 100%; white-space: nowrap; }
+.btn-pair .btn-sm { white-space: nowrap; }
+.btn, .btn-sm, .chip, .day-chip { max-width: 100%; }
+.btn { overflow-wrap: anywhere; }
+.line-date { min-width: 0; flex: 0 0 auto; }
+.manual-row { flex-wrap: wrap; }
+.manual-row input { flex: 1 1 200px; }
+.manual-row .btn { flex: 0 0 auto; }
+.page-head { flex-wrap: wrap; gap: 12px; }
+.page-actions, .actions { flex-wrap: wrap; }
+.photo-pick { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+@media (max-width: 560px) {
+  .appt-row, .line { gap: 10px; }
+  .appt-row > .btn-pair, .line > .btn-pair { flex: 1 1 100%; justify-content: flex-start; }
+  .btn-pair .btn-sm { flex: 1 1 auto; text-align: center; }
+  .inline-form > * { flex: 1 1 100%; }
+  .inline-form .btn-sm, .inline-form .btn { flex: 1 1 auto; }
+  .dose-row { flex-wrap: wrap; }
+}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AppShell from '../components/AppShell';
 import Icon from '../components/Icon';
@@ -9,25 +9,30 @@ import { nextVisit } from '../features/care/careSelectors';
 import { getCareErrorMessage } from '../features/care/careErrors';
 import { formatDate, todayISO } from '../utils/format';
 
-import { CLINIC_PREFIX, CLINIC_CODE as DEMO_CODE } from '../config/clinicCode';
+import { CLINIC_CODE as DEMO_CODE, extractClinicCode } from '../config/clinicCode';
 
 function ScanQR() {
   const user = useSelector((state) => state.auth.user);
   const appointments = useSelector((state) => state.care.appointments);
+  const appointmentsLoaded = useSelector((state) => state.care.loaded.appointments);
+  const [params] = useSearchParams();
+  const linkCode = params.get('code');
   const next = nextVisit(appointments.filter((a) => a.status === 'upcoming'));
 
   const videoRef = useRef(null);
   const handledRef = useRef(false);
-  const [camera, setCamera] = useState('starting'); // starting | scanning | unsupported | denied
+  const [camera, setCamera] = useState(linkCode ? 'off' : 'starting'); // starting | scanning | unsupported | denied | off
+  const [attempt, setAttempt] = useState(0);
   const [manual, setManual] = useState('');
   const [result, setResult] = useState(null); // { ok: boolean, text: string }
 
   // Called when a code is read by the camera or typed in
   const handleCode = useCallback(async (raw) => {
     if (handledRef.current) return;
-    const code = (raw || '').trim();
-    if (!code.startsWith(CLINIC_PREFIX)) {
-      setResult({ ok: false, text: 'That is not a Khatalela-Impilo clinic code. Please scan the QR code at the clinic.' });
+    const code = extractClinicCode(raw);
+    if (!code) {
+      const seen = (raw || '').trim().slice(0, 40);
+      setResult({ ok: false, text: `That is not a Khatalela-Impilo clinic code${seen ? ` (it said: ${seen})` : ''}. Please scan the QR code at the clinic.` });
       return;
     }
     const alreadyIn = appointments.find((a) => a.status === 'checked-in' && a.date === todayISO());
@@ -56,8 +61,18 @@ function ScanQR() {
     handleRef.current = handleCode;
   }, [handleCode]);
 
+  // Opened from the clinic QR link with the phone's normal camera: check in once the bookings have loaded.
+  const linkDoneRef = useRef(false);
+  useEffect(() => {
+    if (!linkCode || !appointmentsLoaded || linkDoneRef.current) return;
+    linkDoneRef.current = true;
+    handleRef.current(linkCode);
+  }, [linkCode, appointmentsLoaded]);
+
   // Start the camera once and read QR codes from its pictures (works in every modern browser).
   useEffect(() => {
+    if (linkCode) return undefined; // no camera needed: the link already holds the code
+    setCamera('starting');
     let stream = null;
     let timer = null;
     let cancelled = false;
@@ -116,7 +131,29 @@ function ScanQR() {
       clearInterval(timer);
       if (stream) stream.getTracks().forEach((track) => track.stop());
     };
-  }, []);
+  }, [attempt, linkCode]);
+
+  // Backup: read a QR code from a photo or screenshot
+  const handlePhoto = (event) => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    const image = new Image();
+    image.onload = () => {
+      const scale = Math.min(1, 1600 / Math.max(image.width, image.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(image.width * scale);
+      canvas.height = Math.round(image.height * scale);
+      const context = canvas.getContext('2d');
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      const picture = context.getImageData(0, 0, canvas.width, canvas.height);
+      const found = jsQR(picture.data, picture.width, picture.height);
+      URL.revokeObjectURL(image.src);
+      if (found && found.data) handleCode(found.data);
+      else setResult({ ok: false, text: 'No QR code found in that picture. Try a clearer, closer photo.' });
+    };
+    image.src = URL.createObjectURL(file);
+  };
 
   const handleManual = (event) => {
     event.preventDefault();
@@ -135,6 +172,7 @@ function ScanQR() {
         {camera === 'starting' && 'Starting the camera… allow it when your browser asks.'}
         {camera === 'scanning' && 'Camera is on. Hold the clinic QR code inside the frame, about 20 to 30 cm away.'}
         {(camera === 'unsupported' || camera === 'denied') && 'Camera is off.'}
+        {camera === 'off' && 'Checking you in from the clinic link…'}
       </p>
 
       <section className="card scan-why" aria-labelledby="why-scan">
@@ -144,6 +182,10 @@ function ScanQR() {
           so you do not have to queue just to say you are here. If you have no booking, scanning still checks you in as a walk-in.
         </p>
       </section>
+
+      {(camera === 'unsupported' || camera === 'denied') && (
+        <p className="center"><button type="button" className="btn btn-primary" onClick={() => setAttempt((n) => n + 1)}>Try the camera again</button></p>
+      )}
 
       {camera === 'unsupported' && (
         <p className="banner banner-info" role="status">
@@ -170,6 +212,10 @@ function ScanQR() {
             placeholder="KHATALELA-CLINIC:..." autoComplete="off" />
           <button type="submit" className="btn btn-primary">Check In</button>
         </div>
+        <label className="btn btn-text photo-pick">
+          Scan from a photo or screenshot
+          <input type="file" accept="image/*" onChange={handlePhoto} className="visually-hidden" />
+        </label>
         <button type="button" className="btn btn-text" onClick={() => { setManual(DEMO_CODE); handleCode(DEMO_CODE); }}>
           Use demo code
         </button>

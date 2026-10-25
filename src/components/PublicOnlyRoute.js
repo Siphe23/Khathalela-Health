@@ -12,7 +12,14 @@ function PublicOnlyRoute() {
   const { isAuthenticated, authInitialized } = useSelector((state) => state.auth);
 
   if (!authInitialized) return <LoadingScreen />;
-  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  if (isAuthenticated) {
+    let next = '/dashboard';
+    try {
+      next = sessionStorage.getItem('afterLogin') || '/dashboard';
+      sessionStorage.removeItem('afterLogin');
+    } catch (e) { /* storage blocked: fine */ }
+    return <Navigate to={next} replace />;
+  }
   return <Outlet />;
 }
 

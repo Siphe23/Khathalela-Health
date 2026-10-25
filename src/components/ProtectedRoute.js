@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import LoadingScreen from './LoadingScreen';
 
@@ -6,12 +6,17 @@ import LoadingScreen from './LoadingScreen';
 // Optional `role`: only people with that role may open the page.
 function ProtectedRoute({ children, role }) {
   const { isAuthenticated, authInitialized, user } = useSelector((state) => state.auth);
+  const location = useLocation();
 
   // 1. Firebase has not answered yet: wait.
   if (!authInitialized) return <LoadingScreen />;
 
   // 2. Nobody is signed in: go to login.
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    // Remember the page (for example a scanned clinic link) so we can return after login.
+    try { sessionStorage.setItem('afterLogin', location.pathname + location.search); } catch (e) { /* storage blocked: fine */ }
+    return <Navigate to="/login" replace />;
+  }
 
   // 3. Signed in but the wrong role for this page (e.g. a patient opening
   //    a worker page): send them to their own dashboard. /dashboard has no
