@@ -70,7 +70,9 @@ function ScanQR() {
         return;
       }
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        });
         if (cancelled) {
           stream.getTracks().forEach((track) => track.stop());
           return;
@@ -79,16 +81,30 @@ function ScanQR() {
         video.srcObject = stream;
         await video.play();
         setCamera('scanning');
-        timer = setInterval(() => {
-          if (!video.videoWidth) return;
-          const scale = Math.min(1, 640 / video.videoWidth);
+        // The phone's own QR reader is used when the browser has one. jsQR is the backup.
+        const detector = 'BarcodeDetector' in window ? new window.BarcodeDetector({ formats: ['qr_code'] }) : null;
+        let working = false;
+        timer = setInterval(async () => {
+          if (!video.videoWidth || working) return;
+          working = true;
+          try {
+            if (detector) {
+              const codes = await detector.detect(video);
+              if (codes.length > 0 && codes[0].rawValue) { handleRef.current(codes[0].rawValue); return; }
+            }
+          } catch (error) {
+            // The built-in reader failed on this picture: jsQR below will try.
+          } finally {
+            working = false;
+          }
+          const scale = Math.min(1, 1280 / video.videoWidth);
           canvas.width = Math.round(video.videoWidth * scale);
           canvas.height = Math.round(video.videoHeight * scale);
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           const picture = context.getImageData(0, 0, canvas.width, canvas.height);
           const found = jsQR(picture.data, picture.width, picture.height);
           if (found && found.data) handleRef.current(found.data);
-        }, 250);
+        }, 300);
       } catch (error) {
         setCamera('denied');
       }
@@ -115,7 +131,11 @@ function ScanQR() {
         {camera !== 'scanning' && <span className="scan-placeholder"><Icon name="qr" size={72} /></span>}
         <span className="corner tl" /><span className="corner tr" /><span className="corner bl" /><span className="corner br" />
       </div>
-      <p className="center muted">Scan the QR code at the clinic</p>
+      <p className="center muted" role="status">
+        {camera === 'starting' && 'Starting the camera… allow it when your browser asks.'}
+        {camera === 'scanning' && 'Camera is on. Hold the clinic QR code inside the frame, about 20 to 30 cm away.'}
+        {(camera === 'unsupported' || camera === 'denied') && 'Camera is off.'}
+      </p>
 
       <section className="card scan-why" aria-labelledby="why-scan">
         <h2 id="why-scan" className="card-title">Why scan?</h2>
@@ -127,12 +147,12 @@ function ScanQR() {
 
       {camera === 'unsupported' && (
         <p className="banner banner-info" role="status">
-          This browser cannot scan with the camera. Type the clinic code below instead.
+          This page cannot use the camera. Open the app from its https:// address (or localhost) and use a current browser. You can type the clinic code below instead.
         </p>
       )}
       {camera === 'denied' && (
         <p className="banner banner-info" role="status">
-          The camera is not available or was blocked. Type the clinic code below instead.
+          The camera is not available or was blocked. Click the camera icon in the address bar, choose Allow, and reload. You can type the clinic code below instead.
         </p>
       )}
 
