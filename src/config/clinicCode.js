@@ -6,7 +6,10 @@ export const CLINIC_CODE = 'KHATALELA-CLINIC:MTHATHA';
 // The QR shows a web link, so the phone's normal camera can open the app.
 // The link is built from the address the worker page is open on.
 export function clinicLink() {
-  return `${window.location.origin}/scan?code=${encodeURIComponent(CLINIC_CODE)}`;
+  // REACT_APP_PUBLIC_URL (in .env / Vercel) pins the link to the real website address,
+  // for example https://khatalela.vercel.app, so phones can open it from anywhere.
+  const base = (process.env.REACT_APP_PUBLIC_URL || window.location.origin).replace(/\/+$/, '');
+  return `${base}/scan?code=${encodeURIComponent(CLINIC_CODE)}`;
 }
 
 // Finds the clinic code inside what was scanned (a plain code or the link above).
