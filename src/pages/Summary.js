@@ -14,7 +14,7 @@ function Summary() {
   const { total, rows } = computeBarriers(recentMissed(appointments));
 
   return (
-    <AppShell wide title="AI Summary" backTo="/dashboard">
+    <AppShell wide title="Summary" backTo="/dashboard">
       <section className="card" aria-labelledby="barriers">
         <h2 id="barriers" className="card-title">Common Barriers (Last 7 Days)</h2>
         {!loaded.appointments ? (

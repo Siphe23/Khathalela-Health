@@ -481,3 +481,4 @@ a.card-urgent:hover { border-color: #b3261e; }
   .inline-form .btn-sm, .inline-form .btn { flex: 1 1 auto; }
   .dose-row { flex-wrap: wrap; }
 }
+.btn-pair.cal-buttons { justify-content: center; }
