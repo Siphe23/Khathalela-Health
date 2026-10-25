@@ -182,4 +182,4 @@ Please be honest about these when presenting:
 
 ## Author
 
-Built by Siphesihle Mzamane for the FNB App of the Year Hackathon 2026.
+Built by Nasiphi Siphesihle Ndzumo for the FNB App of the Year Hackathon 2026.
