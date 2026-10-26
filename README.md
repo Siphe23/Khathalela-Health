@@ -33,6 +33,25 @@ Healthcare workers can see patient information only after an administrator marks
 - Care summary for workers, based on simple rules (not AI)
 - Administrator pages for approvals, users and activity
 - Web layout with a top menu that becomes a hamburger menu on narrow screens
+## 📸 Application Screenshots
+
+### Landing Page
+<img src="screenshots/landing-page.png" alt="Khathalela Impilo Landing Page" width="700"/>
+
+### User Selection Page
+<img src="screenshots/user-selection.png" alt="User Selection Page" width="700"/>
+
+### Login Page
+<img src="screenshots/login-page.png" alt="Login Page" width="700"/>
+
+### Patient Dashboard
+<img src="screenshots/patient-dashboard.png" alt="Patient Dashboard" width="700"/>
+
+### Admin Dashboard
+<img src="screenshots/admin-dashboard.png" alt="Admin Dashboard" width="700"/>
+
+### Healthcare Worker Dashboard
+<img src="screenshots/healthcare-worker-dashboard.png" alt="Healthcare Worker Dashboard" width="700"/>
 
 ## Tech stack
 
