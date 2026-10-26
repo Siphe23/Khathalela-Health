@@ -39,7 +39,7 @@ Healthcare workers can see patient information only after an administrator marks
 <img src="./screenshots/landing-page.png" alt="Khathalela Impilo Landing Page" height="200" width="200"/>
 
 ### User Selection Page
-<img src="./screenshots/user-selection.png" alt="User Selection Page" height="200" width="200"/>
+<img src="./screenshots/user.png" alt="User Selection Page" height="200" width="200"/>
 
 ### Login Page
 <img src="./Screenshots/login-page.png" alt="Login Page" height="200" width="200"/>
@@ -51,7 +51,7 @@ Healthcare workers can see patient information only after an administrator marks
 <img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" height="200" width="200"/>
 
 ### Healthcare Worker Dashboard
-<img src="./Screenshots/healthcare-worker-dashboard.png" alt="Healthcare Worker Dashboard" height="200" width="200"/>
+<img src="./Screenshots/healthcare.png" alt="Healthcare Worker Dashboard" height="200" width="200"/>
 
 
 ## Tech stack
