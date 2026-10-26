@@ -36,22 +36,22 @@ Healthcare workers can see patient information only after an administrator marks
 ## 📸 Application Screenshots
 
 ### Landing Page
-<img src="./screenshots/landing-page.png" alt="Khathalela Impilo Landing Page" width="700"/>
+<img src="./screenshots/landing-page.png" alt="Khathalela Impilo Landing Page" height="200" width="200"/>
 
 ### User Selection Page
-<img src="./screenshots/user-selection.png" alt="User Selection Page" width="700"/>
+<img src="./screenshots/user-selection.png" alt="User Selection Page" height="200" width="200"/>
 
 ### Login Page
-<img src="./Screenshots/login-page.png" alt="Login Page" width="700"/>
+<img src="./Screenshots/login-page.png" alt="Login Page" height="200" width="200"/>
 
 ### Patient Dashboard
-<img src="./screenshots/patient-dashboard.png" alt="Patient Dashboard" width="700"/>
+<img src="./screenshots/patient-dashboard.png" alt="Patient Dashboard"height="200" width="200"/>
 
 ### Admin Dashboard
-<img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" width="700"/>
+<img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" height="200" width="200"/>
 
 ### Healthcare Worker Dashboard
-<img src="./Screenshots/healthcare-worker-dashboard.png" alt="Healthcare Worker Dashboard" width="700"/>
+<img src="./Screenshots/healthcare-worker-dashboard.png" alt="Healthcare Worker Dashboard" height="200" width="200"/>
 
 
 ## Tech stack
