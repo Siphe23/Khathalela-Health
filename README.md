@@ -42,7 +42,7 @@ Healthcare workers can see patient information only after an administrator marks
 <img src="./screenshots/user-selection.png" alt="User Selection Page" width="700"/>
 
 ### Login Page
-<img src="./screenshots/login-page.png" alt="Login Page" width="700"/>
+<img src="./Screenshots/login-page.png" alt="Login Page" width="700"/>
 
 ### Patient Dashboard
 <img src="./screenshots/patient-dashboard.png" alt="Patient Dashboard" width="700"/>
@@ -51,7 +51,7 @@ Healthcare workers can see patient information only after an administrator marks
 <img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" width="700"/>
 
 ### Healthcare Worker Dashboard
-<img src="./screenshots/healthcare-worker-dashboard.png" alt="Healthcare Worker Dashboard" width="700"/>
+<img src="./Screenshots/healthcare-worker-dashboard.png" alt="Healthcare Worker Dashboard" width="700"/>
 
 
 ## Tech stack
