@@ -34,28 +34,6 @@ Healthcare workers can see patient information only after an administrator marks
 - Administrator pages for approvals, users and activity
 - Web layout with a top menu that becomes a hamburger menu on narrow screens
 
-## 📸 Application Screenshots
-
-All screenshots live in the `screenshots/` folder (lowercase).
-
-### Landing Page
-<img src="./screenshots/landing-page.png" alt="Khathalela Impilo Landing Page" width="400"/>
-
-### User Selection Page
-<img src="./screenshots/user.png" alt="User Selection Page" width="400"/>
-
-### Login Page
-<img src="./screenshots/login-page.png" alt="Login Page" width="400"/>
-
-### Patient Dashboard
-<img src="./screenshots/patient-dashboard.png" alt="Patient Dashboard" width="400"/>
-
-### Admin Dashboard
-<img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" width="400"/>
-
-### Healthcare Worker Dashboard
-<img src="./screenshots/healthcare.png" alt="Healthcare Worker Dashboard" width="400"/>
-
 ## Tech stack
 
 - Create React App (JavaScript)
