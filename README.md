@@ -33,26 +33,28 @@ Healthcare workers can see patient information only after an administrator marks
 - Care summary for workers, based on simple rules (not AI)
 - Administrator pages for approvals, users and activity
 - Web layout with a top menu that becomes a hamburger menu on narrow screens
+
 ## 📸 Application Screenshots
 
+All screenshots live in the `screenshots/` folder (lowercase).
+
 ### Landing Page
-<img src="./screenshots/landing-page.png" alt="Khathalela Impilo Landing Page" height="200" width="200"/>
+<img src="./screenshots/landing-page.png" alt="Khathalela Impilo Landing Page" width="400"/>
 
 ### User Selection Page
-<img src="./screenshots/user.png" alt="User Selection Page" height="200" width="200"/>
+<img src="./screenshots/user.png" alt="User Selection Page" width="400"/>
 
 ### Login Page
-<img src="./Screenshots/login-page.png" alt="Login Page" height="200" width="200"/>
+<img src="./screenshots/login-page.png" alt="Login Page" width="400"/>
 
 ### Patient Dashboard
-<img src="./screenshots/patient-dashboard.png" alt="Patient Dashboard"height="200" width="200"/>
+<img src="./screenshots/patient-dashboard.png" alt="Patient Dashboard" width="400"/>
 
 ### Admin Dashboard
-<img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" height="200" width="200"/>
+<img src="./screenshots/admin-dashboard.png" alt="Admin Dashboard" width="400"/>
 
 ### Healthcare Worker Dashboard
-<img src="./Screenshots/healthcare.png" alt="Healthcare Worker Dashboard" height="200" width="200"/>
-
+<img src="./screenshots/healthcare.png" alt="Healthcare Worker Dashboard" width="400"/>
 
 ## Tech stack
 
@@ -74,7 +76,6 @@ You need [Node.js](https://nodejs.org/) (version 18 or newer).
 git clone https://github.com/Siphe23/Khathalela-Health.git
 cd Khathalela-Health
 npm install
-npm install jsqr qrcode.react
 ```
 
 ### 2. Create a Firebase project
@@ -88,7 +89,6 @@ npm install jsqr qrcode.react
 
 Create a file named `.env` in the project root, next to `package.json`:
 
-```
 REACT_APP_FIREBASE_API_KEY=
 REACT_APP_FIREBASE_AUTH_DOMAIN=
 REACT_APP_FIREBASE_PROJECT_ID=
@@ -99,7 +99,6 @@ REACT_APP_FIREBASE_APP_ID=
 # Optional
 REACT_APP_PUBLIC_URL=https://your-app.vercel.app
 REACT_APP_DEMO_TOOLS=false
-```
 
 - `REACT_APP_PUBLIC_URL` is the website address the clinic QR code points to. Set it to your deployed address so phones can open it. Without it, the QR uses the address the worker page is open on (`localhost` does not work on a phone). No slash at the end.
 - `REACT_APP_DEMO_TOOLS=true` shows a "Demo tools" card on the worker dashboard that loads fictional patients and visits. Leave it off for real use.
