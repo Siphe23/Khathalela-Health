@@ -25,6 +25,7 @@ import UrgentHelp from './pages/UrgentHelp';
 import Progress from './pages/Progress';
 import AdminUsers from './pages/AdminUsers';
 import AdminActivity from './pages/AdminActivity';
+import { Terms, Privacy } from './pages/LegalPages';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicOnlyRoute from './components/PublicOnlyRoute';
 import FirebaseSetupNotice from './components/FirebaseSetupNotice';
@@ -49,6 +50,9 @@ function App() {
       <CareSync />
       <Routes>
         {/* Signed-out pages */}
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+
         <Route element={<PublicOnlyRoute />}>
           <Route path="/" element={<Splash />} />
           <Route path="/onboarding" element={<Onboarding />} />

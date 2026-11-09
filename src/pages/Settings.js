@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import AppShell from '../components/AppShell';
 import Collapsible from '../components/Collapsible';
 import Switch from '../components/Switch';
@@ -49,7 +50,8 @@ function Settings() {
         </Collapsible>
 
         <Collapsible icon="lock" title="Privacy & Security">
-          <p className="small">We only keep your name, contact details, role and appointment information. Medical records stay with your clinic.</p>
+          <p className="small">We keep your name, contact details, role, appointments and the medication and concerns you record. Only your approved clinic team and you can see them.</p>
+          <p className="small"><Link to="/terms">Terms of Service</Link> · <Link to="/privacy">Privacy Policy</Link></p>
           {resetSent && <div className="banner banner-success" role="status">A password reset link was sent to {user.email}.</div>}
           {error && <div className="banner banner-error" role="alert">{error}</div>}
           <button type="button" className="btn btn-secondary btn-block" onClick={sendReset} disabled={loading}>

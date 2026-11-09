@@ -482,3 +482,14 @@ a.card-urgent:hover { border-color: #b3261e; }
   .dose-row { flex-wrap: wrap; }
 }
 .btn-pair.cal-buttons { justify-content: center; }
+
+/* ---------- Terms and Privacy pages ---------- */
+.legal { min-height: 100vh; background: #F8F6EF; padding: 24px 16px 56px; color: #26332D; }
+.legal-inner { max-width: 760px; margin: 0 auto; }
+.legal h1 { color: #174D3A; margin: 12px 0 4px; font-size: 1.9rem; }
+.legal h2 { color: #174D3A; margin: 28px 0 8px; font-size: 1.15rem; }
+.legal p, .legal li { line-height: 1.65; overflow-wrap: anywhere; }
+.legal ul { padding-left: 22px; }
+.legal .banner { margin: 16px 0 8px; }
+.legal-links { margin-top: 36px; text-align: center; }
+.legal a { color: #174D3A; font-weight: 600; }

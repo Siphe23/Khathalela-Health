@@ -168,7 +168,7 @@ function Register() {
           <label className="terms">
             <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} />
             <span>
-              I accept the <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.
+              I accept the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
             </span>
           </label>
           {errors.terms && <p className="field-error" role="alert">{errors.terms}</p>}
